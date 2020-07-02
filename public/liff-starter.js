@@ -24,6 +24,8 @@ window.onload = function() {
         myLiffId = defaultLiffId;
         initializeLiffOrDie(myLiffId);
     }
+	liff.login();
+	displayUserProfile();
 };
 
 /**
@@ -165,24 +167,7 @@ function registerButtonHandlers() {
 
     // get profile call
     document.getElementById('getProfileButton').addEventListener('click', function() {
-        liff.getProfile().then(function(profile) {
-            document.getElementById('userIdProfileField').textContent = profile.userId;
-            document.getElementById('displayNameField').textContent = profile.displayName;
-
-            const profilePictureDiv = document.getElementById('profilePictureDiv');
-            if (profilePictureDiv.firstElementChild) {
-                profilePictureDiv.removeChild(profilePictureDiv.firstElementChild);
-            }
-            const img = document.createElement('img');
-            img.src = profile.pictureUrl;
-            img.alt = 'Profile Picture';
-            profilePictureDiv.appendChild(img);
-
-            document.getElementById('statusMessageField').textContent = profile.statusMessage;
-            toggleProfileData();
-        }).catch(function(error) {
-            window.alert('Error getting profile: ' + error);
-        });
+        displayUserProfile();
     });
 
     document.getElementById('shareTargetPicker').addEventListener('click', function() {
@@ -220,6 +205,27 @@ function registerButtonHandlers() {
             window.location.reload();
         }
     });
+}
+
+function displayUserProfile() {
+	liff.getProfile().then(function(profile) {
+	    document.getElementById('userIdProfileField').textContent = profile.userId;
+	    document.getElementById('displayNameField').textContent = profile.displayName;
+	
+	    const profilePictureDiv = document.getElementById('profilePictureDiv');
+	    if (profilePictureDiv.firstElementChild) {
+	        profilePictureDiv.removeChild(profilePictureDiv.firstElementChild);
+	    }
+	    const img = document.createElement('img');
+	    img.src = profile.pictureUrl;
+	    img.alt = 'Profile Picture';
+	    profilePictureDiv.appendChild(img);
+	
+	    document.getElementById('statusMessageField').textContent = profile.statusMessage;
+	    toggleProfileData();
+	}).catch(function(error) {
+	    window.alert('Error getting profile: ' + error);
+	});
 }
 
 /**
