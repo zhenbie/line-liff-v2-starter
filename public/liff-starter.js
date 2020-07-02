@@ -1,5 +1,5 @@
-window.onload = function() {
-    const useNodeJS = true;   // if you are not using a node server, set this value to false
+window.onload = function () {
+    const useNodeJS = false;   // if you are not using a node server, set this value to false
     const defaultLiffId = "1654410354-LWE6PM3Y";   // change the default LIFF value if you are not using a node server
 
     // DO NOT CHANGE THIS
@@ -9,14 +9,14 @@ window.onload = function() {
     // otherwise, pass defaultLiffId
     if (useNodeJS) {
         fetch('/send-id')
-            .then(function(reqResponse) {
+            .then(function (reqResponse) {
                 return reqResponse.json();
             })
-            .then(function(jsonResponse) {
+            .then(function (jsonResponse) {
                 myLiffId = jsonResponse.id;
                 initializeLiffOrDie(myLiffId);
             })
-            .catch(function(error) {
+            .catch(function (error) {
                 document.getElementById("liffAppContent").classList.add('hidden');
                 document.getElementById("nodeLiffIdErrorMessage").classList.remove('hidden');
             });
@@ -35,6 +35,7 @@ function initializeLiffOrDie(myLiffId) {
         document.getElementById("liffAppContent").classList.add('hidden');
         document.getElementById("liffIdErrorMessage").classList.remove('hidden');
     } else {
+        console.log('initializeLiffOrDie/initializeLiffOrDie', myLiffId)
         initializeLiff(myLiffId);
     }
 }
@@ -50,6 +51,7 @@ function initializeLiff(myLiffId) {
         })
         .then(() => {
             // start to use LIFF's api
+            console.log('initSuccessinitSuccessinitSuccessinitSuccess', myLiffId) //init 成功
             initializeApp();
         })
         .catch((err) => {
@@ -79,7 +81,9 @@ function initializeApp() {
 */
 function displayLiffData() {
     document.getElementById('browserLanguage').textContent = liff.getLanguage();
+    console.log('liff.getLanguage()liff.getLanguage()', liff.getLanguage())
     document.getElementById('sdkVersion').textContent = liff.getVersion();
+    console.log('liff.getVersion()liff.getVersion()', liff.getVersion())
     document.getElementById('lineVersion').textContent = liff.getLineVersion();
     document.getElementById('isInClient').textContent = liff.isInClient();
     document.getElementById('isLoggedIn').textContent = liff.isLoggedIn();
@@ -104,7 +108,7 @@ function displayIsInClientInfo() {
 */
 function registerButtonHandlers() {
     // openWindow call
-    document.getElementById('openWindowButton').addEventListener('click', function() {
+    document.getElementById('openWindowButton').addEventListener('click', function () {
         liff.openWindow({
             url: 'https://line.me',
             external: true
@@ -112,7 +116,7 @@ function registerButtonHandlers() {
     });
 
     // closeWindow call
-    document.getElementById('closeWindowButton').addEventListener('click', function() {
+    document.getElementById('closeWindowButton').addEventListener('click', function () {
         if (!liff.isInClient()) {
             sendAlertIfNotInClient();
         } else {
@@ -121,23 +125,23 @@ function registerButtonHandlers() {
     });
 
     // sendMessages call
-    document.getElementById('sendMessageButton').addEventListener('click', function() {
+    document.getElementById('sendMessageButton').addEventListener('click', function () {
         if (!liff.isInClient()) {
             sendAlertIfNotInClient();
         } else {
             liff.sendMessages([{
                 'type': 'text',
                 'text': "You've successfully sent a message! Hooray!"
-            }]).then(function() {
+            }]).then(function () {
                 window.alert('Message sent');
-            }).catch(function(error) {
+            }).catch(function (error) {
                 window.alert('Error sending message: ' + error);
             });
         }
     });
 
     // scanCode call
-    document.getElementById('scanQrCodeButton').addEventListener('click', function() {
+    document.getElementById('scanQrCodeButton').addEventListener('click', function () {
         if (!liff.isInClient()) {
             sendAlertIfNotInClient();
         } else {
@@ -153,22 +157,42 @@ function registerButtonHandlers() {
     });
 
     // get access token
-    document.getElementById('getAccessToken').addEventListener('click', function() {
+    document.getElementById('getAccessToken').addEventListener('click', function () {
         if (!liff.isLoggedIn() && !liff.isInClient()) {
             alert('To get an access token, you need to be logged in. Please tap the "login" button below and try again.');
         } else {
             const accessToken = liff.getAccessToken();
+            console.log('accessTokenaccessTokenaccessTokenaccessTokenaccessTokenaccessToken', accessToken)
             document.getElementById('accessTokenField').textContent = accessToken;
             toggleAccessToken();
         }
     });
 
     // get profile call
-    document.getElementById('getProfileButton').addEventListener('click', function() {
-        displayUserProfile();
+    document.getElementById('getProfileButton').addEventListener('click', function () {
+        liff.getProfile().then(function (profile) {
+            console.log('accessTokenaccessTokenaccessTokenaccessTokenaccessTokenaccessToken', accessToken)
+
+            document.getElementById('userIdProfileField').textContent = profile.userId;
+            document.getElementById('displayNameField').textContent = profile.displayName;
+
+            const profilePictureDiv = document.getElementById('profilePictureDiv');
+            if (profilePictureDiv.firstElementChild) {
+                profilePictureDiv.removeChild(profilePictureDiv.firstElementChild);
+            }
+            const img = document.createElement('img');
+            img.src = profile.pictureUrl;
+            img.alt = 'Profile Picture';
+            profilePictureDiv.appendChild(img);
+
+            document.getElementById('statusMessageField').textContent = profile.statusMessage;
+            toggleProfileData();
+        }).catch(function (error) {
+            window.alert('Error getting profile: ' + error);
+        });
     });
 
-    document.getElementById('shareTargetPicker').addEventListener('click', function() {
+    document.getElementById('shareTargetPicker').addEventListener('click', function () {
         if (!liff.isInClient()) {
             sendAlertIfNotInClient();
         } else {
@@ -181,7 +205,7 @@ function registerButtonHandlers() {
                 ])
                     .then(
                         document.getElementById('shareTargetPickerMessage').textContent = "Share target picker was launched."
-                    ).catch(function(res) {
+                    ).catch(function (res) {
                         document.getElementById('shareTargetPickerMessage').textContent = "Failed to launch share target picker.";
                     });
             }
@@ -189,7 +213,8 @@ function registerButtonHandlers() {
     });
 
     // login call, only when external browser is used
-    document.getElementById('liffLoginButton').addEventListener('click', function() {
+    document.getElementById('liffLoginButton').addEventListener('click', function () {
+        console.log('liff.isLoggedIn()liff.isLoggedIn()liff.isLoggedIn()', liff.isLoggedIn())
         if (!liff.isLoggedIn()) {
             // set `redirectUri` to redirect the user to a URL other than the front page of your LIFF app.
             liff.login();
@@ -197,33 +222,12 @@ function registerButtonHandlers() {
     });
 
     // logout call only when external browse
-    document.getElementById('liffLogoutButton').addEventListener('click', function() {
+    document.getElementById('liffLogoutButton').addEventListener('click', function () {
         if (liff.isLoggedIn()) {
             liff.logout();
             window.location.reload();
         }
     });
-}
-
-function displayUserProfile() {
-	liff.getProfile().then(function(profile) {
-	    document.getElementById('userIdProfileField').textContent = profile.userId;
-	    document.getElementById('displayNameField').textContent = profile.displayName;
-	
-	    const profilePictureDiv = document.getElementById('profilePictureDiv');
-	    if (profilePictureDiv.firstElementChild) {
-	        profilePictureDiv.removeChild(profilePictureDiv.firstElementChild);
-	    }
-	    const img = document.createElement('img');
-	    img.src = profile.pictureUrl;
-	    img.alt = 'Profile Picture';
-	    profilePictureDiv.appendChild(img);
-	
-	    document.getElementById('statusMessageField').textContent = profile.statusMessage;
-	    toggleProfileData();
-	}).catch(function(error) {
-	    window.alert('Error getting profile: ' + error);
-	});
 }
 
 /**
