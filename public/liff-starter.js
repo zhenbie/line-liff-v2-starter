@@ -24,7 +24,6 @@ window.onload = function() {
         myLiffId = defaultLiffId;
         initializeLiffOrDie(myLiffId);
     }
-	liff.login();
 };
 
 /**
