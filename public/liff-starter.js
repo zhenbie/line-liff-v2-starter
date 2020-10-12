@@ -2,6 +2,9 @@ window.onload = function() {
     const useNodeJS = false;   // if you are not using a node server, set this value to false
     const defaultLiffId = "1655093230-lrQL1ZgQ";   // change the default LIFF value if you are not using a node server
 
+
+	const vConsole = new VConsole();
+	console.log('aaa1234');
     // DO NOT CHANGE THIS
     let myLiffId = "";
 
@@ -187,6 +190,7 @@ function registerButtonHandlers() {
     });
 
     document.getElementById('shareTargetPicker').addEventListener('click', function () {
+		console.log("ddddddddddddddddddddddddd");
         if (liff.isApiAvailable('shareTargetPicker')) {
             liff.shareTargetPicker([{
                 'type': 'text',
