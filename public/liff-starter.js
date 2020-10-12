@@ -192,6 +192,7 @@ function registerButtonHandlers() {
     document.getElementById('shareTargetPicker').addEventListener('click', function () {
 		console.log("ddddddddddddddddddddddddd");
         if (liff.isApiAvailable('shareTargetPicker')) {
+			console.log("ffffffffffffffff");
             liff.shareTargetPicker([{
                 'type': 'text',
                 'text': 'Hello, World! https://www.163.com'
@@ -200,7 +201,9 @@ function registerButtonHandlers() {
             ).catch(function (res) {
                 document.getElementById('shareTargetPickerMessage').textContent = "Failed to launch share target picker.";
             });
-        }
+        } else {
+			console.log("eeeeeeeeeeeee");
+		}
     });
 
     // login call, only when external browser is used
