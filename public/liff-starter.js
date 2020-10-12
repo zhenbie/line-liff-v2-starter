@@ -36,9 +36,11 @@ window.onload = function() {
 function initializeLiffOrDie(myLiffId) {
 	
     if (!myLiffId) {
+		console.log('initializeLiffOrDie 1 ', myLiffId);
         document.getElementById("liffAppContent").classList.add('hidden');
         document.getElementById("liffIdErrorMessage").classList.remove('hidden');
     } else {
+		console.log('initializeLiffOrDie 2 ', myLiffId);
         initializeLiff(myLiffId);
     }
 }
