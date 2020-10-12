@@ -201,7 +201,7 @@ function registerButtonHandlers() {
                 liff.shareTargetPicker([
                     {
                         'type': 'text',
-                        'text': 'Hello, World!'
+                        'text': 'Hello, World! https://www.163.com'
                     }
                 ])
                     .then(
