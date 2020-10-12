@@ -34,6 +34,7 @@ window.onload = function() {
 * @param {string} myLiffId The LIFF ID of the selected element
 */
 function initializeLiffOrDie(myLiffId) {
+	
     if (!myLiffId) {
         document.getElementById("liffAppContent").classList.add('hidden');
         document.getElementById("liffIdErrorMessage").classList.remove('hidden');
@@ -52,6 +53,7 @@ function initializeLiff(myLiffId) {
             liffId: myLiffId
         })
         .then(() => {
+			console.log('initializeLiff禾禾禾禾ttt' + myLiffId);
             // start to use LIFF's api
             initializeApp();
         })
@@ -69,6 +71,7 @@ function initializeApp() {
     displayIsInClientInfo();
     registerButtonHandlers();
 
+	console.log('initializeApp hhhhhhhhhhhhhhhhhhh');
     // check if the user is logged in/out, and disable inappropriate button
     if (liff.isLoggedIn()) {
         document.getElementById('liffLoginButton').disabled = true;
@@ -192,7 +195,6 @@ function registerButtonHandlers() {
     document.getElementById('shareTargetPicker').addEventListener('click', function () {
 		console.log("ddddddddddddddddddddddddd");
         if (liff.isApiAvailable('shareTargetPicker')) {
-			console.log("ffffffffffffffff");
             liff.shareTargetPicker([{
                 'type': 'text',
                 'text': 'Hello, World! https://www.163.com'
@@ -201,9 +203,7 @@ function registerButtonHandlers() {
             ).catch(function (res) {
                 document.getElementById('shareTargetPickerMessage').textContent = "Failed to launch share target picker.";
             });
-        } else {
-			console.log("eeeeeeeeeeeee");
-		}
+        }
     });
 
     // login call, only when external browser is used
